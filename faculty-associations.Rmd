@@ -18,9 +18,6 @@ library(UpSetR)
 ```
 
 ```{r assoc_current}
-# burn it
-setwd("~/Dropbox (Hesselberth Lab)/Service/Reilly Graduate School Task Force")
-
 assoc_current_wide <- read_excel("Faculty affiliations.xlsx") %>%
   pivot_longer(-faculty.member) %>%
   mutate(value = as.integer(value)) %>%
