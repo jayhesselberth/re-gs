@@ -1,0 +1,129 @@
+---
+title: "Impact of reorganization on program composition"
+author: "Jay Hesselberth"
+date: "4/14/2020"
+output:
+  html_document:
+    code_folding: "hide"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(glue)
+library(cowplot)
+library(colorblindr)
+library(readxl)
+library(gt)
+library(UpSetR)
+```
+
+```{r assoc_current}
+# burn it
+setwd("~/Dropbox (Hesselberth Lab)/Service/Reilly Graduate School Task Force")
+
+assoc_current_wide <- read_excel("Faculty affiliations.xlsx") %>%
+  pivot_longer(-faculty.member) %>%
+  mutate(value = as.integer(value)) %>%
+  pivot_wider(names_from = name, values_from = value)
+
+assoc_current <- pivot_longer(assoc_current_wide, -faculty.member, names_to = "program") %>%
+  filter(value == 1) %>%
+  set_names(c("faculty.member", "program", "value")) %>%
+  select(faculty.member, program)
+
+new_assoc_current_wide <- read_excel("Faculty affiliations.xlsx", sheet = 2) %>%
+  pivot_longer(-faculty.member) %>%
+  replace_na(list(value = 0)) %>%
+  mutate(value = as.integer(value)) %>%
+  pivot_wider(names_from = name, values_from = value)
+
+new_assoc_current <- pivot_longer(new_assoc_current_wide, -faculty.member, names_to = "program") %>%
+  filter(value == 1) %>%
+  set_names(c("faculty.member", "program", "value")) %>%
+  select(faculty.member, program)
+
+n.faculty.curr <- length(unique(assoc_current$faculty.member))
+n.prog.curr <- length(unique(assoc_current$program))
+
+n.faculty.new <- length(unique(new_assoc_current$faculty.member))
+n.prog.new <- length(unique(new_assoc_current$program))
+```
+
+```{r program_sizes, eval = FALSE, include = FALSE}
+prog_sizes <- count(assoc_current, program, sort = TRUE)
+
+ggplot(prog_sizes, aes(reorder(program, -n), n)) +
+  geom_col() +
+  theme_minimal_hgrid() +
+  labs(
+    x = "",
+    y = "Training Faculty",
+    title = "Current Program Sizes"
+  )
+```
+
+```{r plot_affil, eval = FALSE, include = FALSE}
+# counts of counts
+affil_counts <- count(assoc_current, faculty.member) %>% count(n)
+  
+ggplot(affil_counts, aes(n, nn, fill = factor(n))) +
+  geom_col() +
+  labs(
+    x = "Program Affiliations",
+    y = "Number of Faculty",
+    title = "Current Program Faculty Distribution",
+    subtitle = glue(
+      "{fac} faculty across {prog} programs",
+      fac = n.faculty.curr,
+      prog = n.prog.curr 
+    )
+  ) +
+  scale_fill_OkabeIto() +
+  theme_minimal_hgrid() +
+  theme(legend.position = "none")
+```
+
+## Raw data
+
+The raw data for this analysis is on this [Google Sheet](https://docs.google.com/spreadsheets/d/1Q8lkPItX6yhoiIXoMKxbA0KG3qxSmmIQ3oFeb0ZH4DE/edit?usp=sharing).
+
+* The "Current" tab contains the data from the GS survey of program memberships prepared for the Engelke task force.
+
+* The "Proposed" tab contains my assignments (marked with "1"s) of faculty to the new structure. I'm pretty comfortable with most of these assignments, but please let me know if you have quibbles. In this exercise I learned there are several training faculty at AMC I have never heard of, so relied on CU Profiles to help me choose.
+
+## Program composition
+
+These plots illustrate the size and overlaps of training faculty across programs. 
+
+If you've never seen ["upset" plots](https://academic.oup.com/bioinformatics/article/33/18/2938/3884387) before, they're worth digesting:
+
+* the **Set Size** (bottom left) plots the total size of each category. For example, the total number of faculty in MOLB is 67.
+
+* the **Intersection Size** (main plot) is the total number of faculty in each combination, represented by one or more connected dots below the columns. For the left-most columns, each set is comprised of only one program, i.e. the faculty who are associated uniquely with that program. For example, there are 36 faculty who are uniquely associated with IMMU. Faculty who are in one or more programs are represented by connected dots. For example, there are 10 faculty who are in both NRSC and PHCL (also note these 10 are *only* in NRSC and PHCL).
+
+### Current program structure
+
+The first plot is our current program structure, based on the GS survey of program memberships. Note the large number of overlaps, with many combinations having a small number of faculty.
+
+```{r prog_upset_curr, fig.width = 10}
+upset(as.data.frame(assoc_current_wide), nsets = n.prog.curr, nintersects = NA)
+```
+
+### Proposed program structure
+
+This plot represents the proposed program structure.
+
+1.	Cell and Molecular Biology (**CMB**; merges MOLB, CSDV, and STBB)
+2.	Neurobiology (**NEURO**; merges NRSC, IPHY, and neuro related PHCL)
+3.	Immunology and Microbiology (**IM**; merges MICB and IMMU)
+4.	Cancer Biology and Pharmacology (**CAN**; merges CANB and cancer related PHCL)
+5.	Human Genomics and Computational Biology (**HGCB**; merges CPBS and HMGG)
+
+* There are *many* fewer overlaps. As I went through assigning faculty, in most cases it was obvious what the dominant association should be (with the caveat that there are ~50 people I've never heard of; would appreciate a double-check of the raw data).
+
+* The sizes of unique associations are fairly consistent, with four of the new programs having 70-75 faculty. The outlier is CAN (Cancer Biology and Pharmacology) with 51 total faculty (42 plus the overlaps).
+
+```{r prog_upset_new, fig.width = 10}
+upset(as.data.frame(new_assoc_current_wide), nsets = n.prog.new, nintersects = NA)
+```
+
