@@ -1,0 +1,12 @@
+name: "."
+title: "AMC PhD Program Task Force"
+description: |
+  AMC PhD Program Task Force
+output_dir: "docs"
+navbar:
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+output: distill::distill_article

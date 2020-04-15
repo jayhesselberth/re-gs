@@ -2,18 +2,12 @@
 title: "Impact of reorganization on program composition"
 author: "Jay Hesselberth"
 date: "4/14/2020"
-output:
-  html_document:
-    code_folding: "hide"
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(glue)
-library(cowplot)
-library(colorblindr)
 library(readxl)
-library(gt)
 library(UpSetR)
 ```
 
@@ -46,39 +40,7 @@ n.faculty.new <- length(unique(new_assoc_current$faculty.member))
 n.prog.new <- length(unique(new_assoc_current$program))
 ```
 
-```{r program_sizes, eval = FALSE, include = FALSE}
-prog_sizes <- count(assoc_current, program, sort = TRUE)
-
-ggplot(prog_sizes, aes(reorder(program, -n), n)) +
-  geom_col() +
-  theme_minimal_hgrid() +
-  labs(
-    x = "",
-    y = "Training Faculty",
-    title = "Current Program Sizes"
-  )
-```
-
-```{r plot_affil, eval = FALSE, include = FALSE}
-# counts of counts
-affil_counts <- count(assoc_current, faculty.member) %>% count(n)
-  
-ggplot(affil_counts, aes(n, nn, fill = factor(n))) +
-  geom_col() +
-  labs(
-    x = "Program Affiliations",
-    y = "Number of Faculty",
-    title = "Current Program Faculty Distribution",
-    subtitle = glue(
-      "{fac} faculty across {prog} programs",
-      fac = n.faculty.curr,
-      prog = n.prog.curr 
-    )
-  ) +
-  scale_fill_OkabeIto() +
-  theme_minimal_hgrid() +
-  theme(legend.position = "none")
-```
+# Program composition
 
 ## Raw data
 
@@ -90,7 +52,7 @@ The raw data for this analysis is on this [Google Sheet](https://docs.google.com
 
 **In our current program structure, there are `r glue("{fac} faculty across {prog} programs", fac = n.faculty.curr, prog = n.prog.curr)`**.
 
-## Program composition
+## Upset plots
 
 These plots illustrate the size and overlaps of training faculty across programs. 
 
@@ -104,8 +66,17 @@ If you've never seen ["upset" plots](https://academic.oup.com/bioinformatics/art
 
 The first plot is our current program structure, with compositions from the GS survey of program memberships collected as part of the Engelke task force.
 
-```{r prog_upset_curr, fig.width = 10}
-upset(as.data.frame(assoc_current_wide), nsets = n.prog.curr, nintersects = NA)
+```{r prog_upset_curr, layout="l-body-outset", fig.asp = 0.8, fig.width = 10}
+upset(
+  as.data.frame(assoc_current_wide),
+  nsets = n.prog.curr,
+  nintersects = NA,
+  sets.bar.color = "#E69F00",
+  main.bar.color = "#56B4E9",
+  matrix.color = "#009E73",
+  point.size = 2,
+  text.scale = c(1.6, 1.5, 1.5, 1.6, 1.3, 1)
+)
 ```
 
 Note the large number of combinations, with many comprised of a small number of faculty (often a single person).
@@ -120,18 +91,27 @@ This plot represents the proposed program structure, with my faculty assignments
 4.	Cancer Biology and Pharmacology (**CAN**)
 5.	Human Genomics and Computational Biology (**HGCB**)
 
-```{r prog_upset_new, fig.width = 10}
-upset(as.data.frame(new_assoc_current_wide), nsets = n.prog.new, nintersects = NA)
+```{r prog_upset_new, layout="l-body-outset", fig.asp = 0.8, fig.width = 10}
+upset(
+  as.data.frame(new_assoc_current_wide),
+  nsets = n.prog.new,
+  nintersects = NA,
+  sets.bar.color = "#E69F00",
+  main.bar.color = "#56B4E9",
+  matrix.color = "#009E73",
+  point.size = 4,
+  text.scale = c(1.6, 1.5, 1.5, 1.6, 1.5, 1.3)
+)
 ```
 
-* There are *many* fewer combinations. As I went through assigning faculty, in many cases it was obvious what the primary association(s) should be; everyone is affiliated with 1 or 2 programs. 
+* There are *many* fewer cross-program faculty. As I went through mapping faculty to programs, in many cases it was obvious what the primary association(s) should be; everyone is affiliated with 1 or 2 programs. 
 
-* (caveat: there are ~50 training faculty I've never heard of; would appreciate a double-check of the raw data).
+  (caveat: there are ~50 training faculty I've never heard of; would appreciate a double-check of the raw data).
 
-* Notable exceptions to obvious mappings were:
+* Notable exceptions to obvious (to me) mappings were:
 
   1. faculty currently in IPHYS with a metabolism / endocrinology focus; I put them in HGCB. 
   
-  2. 10-15 clinical researchers without an obvious home; for example, Peter Buttrick is in the list, which program would he gravitate to? HGCB?
+  2. 10-15 clinical researchers without an obvious home; for example, Peter is in the list, which program would he identify with? I put most in HGCB.
 
-* The sizes of unique associations are roughly uniform, with four of the new programs each comprised of 70-80 faculty. CAN (Cancer Biology and Pharmacology) is a bit smaller with 51 total faculty (42 plus the overlaps).
+* The sizes of new programs are roughly uniform, with four of the new programs comprised of 70-80 uniquely-associated faculty. CAN (Cancer Biology and Pharmacology) is a bit smaller. 
