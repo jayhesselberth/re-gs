@@ -91,6 +91,8 @@ The raw data for this analysis is on this [Google Sheet](https://docs.google.com
 
 * The "Proposed" tab contains my assignments (marked with "1"s) of faculty to the new structure. I'm pretty comfortable with most of these assignments, but please let me know if you have quibbles. In this exercise I learned there are several training faculty at AMC I have never heard of, so relied on CU Profiles to help me choose.
 
+**In our current program structure, there are `r glue("{fac} faculty across {prog} programs", fac = n.faculty.curr, prog = n.prog.curr)`**.
+
 ## Program composition
 
 These plots illustrate the size and overlaps of training faculty across programs. 
