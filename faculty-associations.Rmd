@@ -123,7 +123,9 @@ This plot represents the proposed program structure.
 
 * There are *many* fewer overlaps. As I went through assigning faculty, in most cases it was obvious what the dominant association should be (with the caveat that there are ~50 people I've never heard of; would appreciate a double-check of the raw data).
 
-* The sizes of unique associations are fairly consistent, with four of the new programs having 70-75 faculty. The outlier is CAN (Cancer Biology and Pharmacology) with 51 total faculty (42 plus the overlaps).
+* The notable exceptions to obvious mappings were 1) faculty currently in IPHYS with a metabolism / endocrinology focus; I put them in HGCB. And 2) 10-15 clinical researchers without a clear home; for example, Peter Buttrick is in the list, which program would he gravitate to? HGCB?
+
+* The sizes of unique associations are fairly consistent, with four of the new programs having 70-80 faculty. The outlier is CAN (Cancer Biology and Pharmacology) with 51 total faculty (42 plus the overlaps).
 
 ```{r prog_upset_new, fig.width = 10}
 upset(as.data.frame(new_assoc_current_wide), nsets = n.prog.new, nintersects = NA)
