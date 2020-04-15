@@ -1,7 +1,7 @@
 ---
 title: "AMC PhD Program Task Force"
 description: |
-  Welcome to the website. I hope you enjoy it!
+  Analyses associated the GS reorganization 
 site: distill::distill_website
 ---
 
@@ -16,3 +16,6 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
+## Vignettes
+
+- **[Program Composition](faculty-associations.html)**: Composition of programs before and after reorganization.
