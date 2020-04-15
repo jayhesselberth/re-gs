@@ -105,29 +105,36 @@ If you've never seen ["upset" plots](https://academic.oup.com/bioinformatics/art
 
 ### Current program structure
 
-The first plot is our current program structure, based on the GS survey of program memberships. Note the large number of overlaps, with many combinations having a small number of faculty.
+The first plot is our current program structure, with compositions from the GS survey of program memberships collected as part of the Engelke task force.
 
 ```{r prog_upset_curr, fig.width = 10}
 upset(as.data.frame(assoc_current_wide), nsets = n.prog.curr, nintersects = NA)
 ```
 
+Note the large number of combinations, with many comprised of a small number of faculty (often a single person).
+
 ### Proposed program structure
 
-This plot represents the proposed program structure.
+This plot represents the proposed program structure, with my faculty assignments from the sheet above.
 
-1.	Cell and Molecular Biology (**CMB**; merges MOLB, CSDV, and STBB)
-2.	Neurobiology (**NEURO**; merges NRSC, IPHY, and neuro related PHCL)
-3.	Immunology and Microbiology (**IM**; merges MICB and IMMU)
-4.	Cancer Biology and Pharmacology (**CAN**; merges CANB and cancer related PHCL)
-5.	Human Genomics and Computational Biology (**HGCB**; merges CPBS and HMGG)
-
-* There are *many* fewer overlaps. As I went through assigning faculty, in most cases it was obvious what the dominant association should be (with the caveat that there are ~50 people I've never heard of; would appreciate a double-check of the raw data).
-
-* The notable exceptions to obvious mappings were 1) faculty currently in IPHYS with a metabolism / endocrinology focus; I put them in HGCB. And 2) 10-15 clinical researchers without a clear home; for example, Peter Buttrick is in the list, which program would he gravitate to? HGCB?
-
-* The sizes of unique associations are fairly consistent, with four of the new programs having 70-80 faculty. The outlier is CAN (Cancer Biology and Pharmacology) with 51 total faculty (42 plus the overlaps).
+1.	Cell and Molecular Biology (**CMB**)
+2.	Neurobiology (**NEURO**)
+3.	Immunology and Microbiology (**IM**)
+4.	Cancer Biology and Pharmacology (**CAN**)
+5.	Human Genomics and Computational Biology (**HGCB**)
 
 ```{r prog_upset_new, fig.width = 10}
 upset(as.data.frame(new_assoc_current_wide), nsets = n.prog.new, nintersects = NA)
 ```
 
+* There are *many* fewer combinations. As I went through assigning faculty, in many cases it was obvious what the primary association(s) should be; everyone is affiliated with 1 or 2 programs. 
+
+* (caveat: there are ~50 training faculty I've never heard of; would appreciate a double-check of the raw data).
+
+* Notable exceptions to obvious mappings were:
+
+  1. faculty currently in IPHYS with a metabolism / endocrinology focus; I put them in HGCB. 
+  
+  2. 10-15 clinical researchers without an obvious home; for example, Peter Buttrick is in the list, which program would he gravitate to? HGCB?
+
+* The sizes of unique associations are roughly uniform, with four of the new programs each comprised of 70-80 faculty. CAN (Cancer Biology and Pharmacology) is a bit smaller with 51 total faculty (42 plus the overlaps).
