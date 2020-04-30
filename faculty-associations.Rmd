@@ -12,7 +12,7 @@ library(UpSetR)
 ```
 
 ```{r assoc_current}
-assoc_current_wide <- read_excel("Faculty affiliations.xlsx") %>%
+assoc_current_wide <- read_excel("data-raw/Faculty affiliations.xlsx") %>%
   pivot_longer(-faculty.member) %>%
   mutate(value = as.integer(value)) %>%
   pivot_wider(names_from = name, values_from = value)
@@ -22,7 +22,7 @@ assoc_current <- pivot_longer(assoc_current_wide, -faculty.member, names_to = "p
   set_names(c("faculty.member", "program", "value")) %>%
   select(faculty.member, program)
 
-new_assoc_current_wide <- read_excel("Faculty affiliations.xlsx", sheet = 2) %>%
+new_assoc_current_wide <- read_excel("data-raw/Faculty affiliations.xlsx", sheet = 2) %>%
   pivot_longer(-faculty.member) %>%
   replace_na(list(value = 0)) %>%
   mutate(value = as.integer(value)) %>%
@@ -89,7 +89,7 @@ This plot represents the proposed program structure, with my faculty assignments
 2.	Neurobiology (**NEURO**)
 3.	Immunology and Microbiology (**IM**)
 4.	Cancer Biology and Pharmacology (**CAN**)
-5.	Human Genomics and Computational Biology (**HGCB**)
+5.	Human Systems and Computational Biology (**HSCB**)
 
 ```{r prog_upset_new, layout="l-body-outset", fig.asp = 0.8, fig.width = 10}
 upset(
@@ -105,13 +105,5 @@ upset(
 ```
 
 * There are *many* fewer cross-program faculty. As I went through mapping faculty to programs, in many cases it was obvious what the primary association(s) should be; everyone is affiliated with 1 or 2 programs. 
-
-  (caveat: there are ~50 training faculty I've never heard of; would appreciate a double-check of the raw data).
-
-* Notable exceptions to obvious (to me) mappings were:
-
-  1. faculty currently in IPHYS with a metabolism / endocrinology focus; I put them in HGCB. 
-  
-  2. 10-15 clinical researchers without an obvious home; for example, Peter is in the list, which program would he identify with? I put most in HGCB.
 
 * The sizes of new programs are roughly uniform, with four of the new programs comprised of 70-80 uniquely-associated faculty. CAN (Cancer Biology and Pharmacology) is a bit smaller. 
