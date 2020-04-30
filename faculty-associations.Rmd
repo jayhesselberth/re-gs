@@ -60,7 +60,7 @@ If you've never seen ["upset" plots](https://academic.oup.com/bioinformatics/art
 
 * the **Set Size** (bottom left) plots the total size of each category. For example, the total number of faculty in MOLB is 67.
 
-* the **Intersection Size** (main plot) is the total number of faculty in each combination, represented by one or more connected dots below the columns. For the left-most columns, each set is comprised of only one program, i.e. the faculty who are associated uniquely with that program. For example, there are 36 faculty who are uniquely associated with IMMU. Faculty who are in one or more programs are represented by connected dots. For example, there are 10 faculty who are in both NRSC and PHCL (also note these 10 are *only* in NRSC and PHCL).
+* the **Intersection Size** (main plot) is the total number of faculty in each combination, represented by one or more connected dots below the columns. For the left-most columns, each set is comprised of only one program, i.e. the faculty who are associated uniquely with that program. For example, there are 36 faculty who are uniquely associated with IMMU. Faculty who are in two or more programs are represented by connected dots. For example, there are 10 faculty who are in both NRSC and PHCL (also note these 10 are *only* in NRSC and PHCL).
 
 ### Current program structure
 
