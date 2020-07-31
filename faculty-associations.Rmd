@@ -39,7 +39,7 @@ again_new_assoc_current_wide <- read_excel("raw-data/Faculty affiliations.xlsx",
   mutate(value = as.integer(value)) %>%
   pivot_wider(names_from = name, values_from = value)
 
-again_new_assoc_current <- pivot_longer(new_assoc_current_wide, -faculty.member, names_to = "program") %>%
+again_new_assoc_current <- pivot_longer(again_new_assoc_current_wide, -faculty.member, names_to = "program") %>%
   filter(value == 1) %>%
   set_names(c("faculty.member", "program", "value")) %>%
   select(faculty.member, program)
@@ -124,7 +124,7 @@ upset(
 
 ### (Yet another) Proposed program structure
 
-This plot represents the proposed program structure, with my faculty assignments from the sheet above.
+This plot represents yet antoerh proposed program structure, with my faculty assignments from the sheet above.
 
 1. CSD, HMGP, Iphs (CSDV)
 1. Mol bio and structure (MOLB)
@@ -147,7 +147,3 @@ upset(
   text.scale = c(1.6, 1.5, 1.5, 1.6, 1.5, 1.3)
 )
 ```
-
-* There are *many* fewer cross-program faculty. As I went through mapping faculty to programs, in many cases it was obvious what the primary association(s) should be; everyone is affiliated with 1 or 2 programs. 
-
-* The sizes of new programs are roughly uniform, with four of the new programs comprised of 70-80 uniquely-associated faculty. CAN (Cancer Biology and Pharmacology) is a bit smaller. 
