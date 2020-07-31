@@ -12,7 +12,7 @@ library(UpSetR)
 ```
 
 ```{r assoc_current}
-assoc_current_wide <- read_excel("data-raw/Faculty affiliations.xlsx") %>%
+assoc_current_wide <- read_excel("raw-data/Faculty affiliations.xlsx") %>%
   pivot_longer(-faculty.member) %>%
   mutate(value = as.integer(value)) %>%
   pivot_wider(names_from = name, values_from = value)
@@ -22,7 +22,7 @@ assoc_current <- pivot_longer(assoc_current_wide, -faculty.member, names_to = "p
   set_names(c("faculty.member", "program", "value")) %>%
   select(faculty.member, program)
 
-new_assoc_current_wide <- read_excel("data-raw/Faculty affiliations.xlsx", sheet = 2) %>%
+new_assoc_current_wide <- read_excel("raw-data/Faculty affiliations.xlsx", sheet = 2) %>%
   pivot_longer(-faculty.member) %>%
   replace_na(list(value = 0)) %>%
   mutate(value = as.integer(value)) %>%
@@ -33,11 +33,25 @@ new_assoc_current <- pivot_longer(new_assoc_current_wide, -faculty.member, names
   set_names(c("faculty.member", "program", "value")) %>%
   select(faculty.member, program)
 
+again_new_assoc_current_wide <- read_excel("raw-data/Faculty affiliations.xlsx", sheet = 3) %>%
+  pivot_longer(-faculty.member) %>%
+  replace_na(list(value = 0)) %>%
+  mutate(value = as.integer(value)) %>%
+  pivot_wider(names_from = name, values_from = value)
+
+again_new_assoc_current <- pivot_longer(new_assoc_current_wide, -faculty.member, names_to = "program") %>%
+  filter(value == 1) %>%
+  set_names(c("faculty.member", "program", "value")) %>%
+  select(faculty.member, program)
+
 n.faculty.curr <- length(unique(assoc_current$faculty.member))
 n.prog.curr <- length(unique(assoc_current$program))
 
 n.faculty.new <- length(unique(new_assoc_current$faculty.member))
 n.prog.new <- length(unique(new_assoc_current$program))
+
+n.faculty.new.again <- length(unique(again_new_assoc_current$faculty.member))
+n.prog.new.again <- length(unique(again_new_assoc_current$program))
 ```
 
 # Program composition
@@ -95,6 +109,36 @@ This plot represents the proposed program structure, with my faculty assignments
 upset(
   as.data.frame(new_assoc_current_wide),
   nsets = n.prog.new,
+  nintersects = NA,
+  sets.bar.color = "#E69F00",
+  main.bar.color = "#56B4E9",
+  matrix.color = "#009E73",
+  point.size = 4,
+  text.scale = c(1.6, 1.5, 1.5, 1.6, 1.5, 1.3)
+)
+```
+
+* There are *many* fewer cross-program faculty. As I went through mapping faculty to programs, in many cases it was obvious what the primary association(s) should be; everyone is affiliated with 1 or 2 programs. 
+
+* The sizes of new programs are roughly uniform, with four of the new programs comprised of 70-80 uniquely-associated faculty. CAN (Cancer Biology and Pharmacology) is a bit smaller. 
+
+### (Yet another) Proposed program structure
+
+This plot represents the proposed program structure, with my faculty assignments from the sheet above.
+
+1. CSD, HMGP, Iphs (CSDV)
+1. Mol bio and structure (MOLB)
+1. Neuro (NEURO)
+1. Comp bio and personalized medicine part of HMGP (COMP)
+1. Immuno micro (IM)
+1. Can Bio (CANB)
+1. Pharm (PHRM)
+
+
+```{r prog_upset_new_again, layout="l-body-outset", fig.asp = 0.8, fig.width = 10}
+upset(
+  as.data.frame(again_new_assoc_current_wide),
+  nsets = n.prog.new.again,
   nintersects = NA,
   sets.bar.color = "#E69F00",
   main.bar.color = "#56B4E9",
