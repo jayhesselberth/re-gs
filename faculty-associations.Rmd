@@ -15,10 +15,11 @@ library(googlesheets4)
 ```{r assoc_current}
 url <- "https://docs.google.com/spreadsheets/d/1Q8lkPItX6yhoiIXoMKxbA0KG3qxSmmIQ3oFeb0ZH4DE/edit#gid=444476722"
 
-assoc_current_wide <- read_sheet(url, sheet = 1) %>% 
+assoc_current_wide <- read_sheet(url, sheet = 1, range = "A1:L347") %>% 
   pivot_longer(-faculty.member) %>%
   mutate(value = as.integer(value)) %>%
-  pivot_wider(names_from = name, values_from = value)
+  pivot_wider(names_from = name, values_from = value) %>%
+  unnest()
 
 assoc_current_wide[is.na(assoc_current_wide)] <- 0
 
@@ -27,18 +28,19 @@ assoc_current <- pivot_longer(assoc_current_wide, -faculty.member, names_to = "p
   set_names(c("faculty.member", "program", "value")) %>%
   select(faculty.member, program)
 
-new_assoc_current_wide <- read_sheet(url, sheet = 2) %>% 
+new_assoc_current_wide <- read_sheet(url, sheet = 3) %>% 
   pivot_longer(-faculty.member) %>%
   replace_na(list(value = 0)) %>%
   mutate(value = as.integer(value)) %>%
-  pivot_wider(names_from = name, values_from = value)
+  pivot_wider(names_from = name, values_from = value) %>%
+  unnest()
 
 new_assoc_current <- pivot_longer(new_assoc_current_wide, -faculty.member, names_to = "program") %>%
   filter(value == 1) %>%
   set_names(c("faculty.member", "program", "value")) %>%
   select(faculty.member, program)
 
-again_new_assoc_current_wide <- read_sheet(url, sheet = 3) %>% 
+again_new_assoc_current_wide <- read_sheet(url, sheet = 4) %>% 
   pivot_longer(-faculty.member) %>%
   replace_na(list(value = 0)) %>%
   mutate(value = as.integer(value)) %>%
@@ -100,7 +102,7 @@ upset(
 
 Note the large number of combinations, with many comprised of a small number of faculty (often a single person).
 
-### Proposed program structure
+### Proposed program structure (Round 1)
 
 This plot represents the proposed program structure, with my faculty assignments from the sheet above.
 
@@ -127,9 +129,9 @@ upset(
 
 * The sizes of new programs are roughly uniform, with four of the new programs comprised of 70-80 uniquely-associated faculty. CAN (Cancer Biology and Pharmacology) is a bit smaller. 
 
-### (Yet another) Proposed program structure
+### Proposed program structure (Round 2)
 
-This plot represents yet antoerh proposed program structure, with my faculty assignments from the sheet above.
+This plot represents yet another proposed program structure, with my faculty assignments from the sheet above.
 
 1. CSD, HMGP, Iphs (CSDV)
 1. Mol bio and structure (MOLB)
